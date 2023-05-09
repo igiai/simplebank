@@ -1,0 +1,13 @@
+{
+    "cSpell.words": [
+        "gomock",
+        "gonic",
+        "igiai",
+        "mockdb",
+        "oneof",
+        "simplebank",
+        "sqlc",
+        "stretchr"
+    ],
+    "go.testFlags": ["-v"]
+}
