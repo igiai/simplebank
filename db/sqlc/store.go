@@ -35,7 +35,9 @@ func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) erro
 	if err != nil {
 		return err
 	}
-	// This is a Queries object which runs within transaction
+	// This is a Queries object which runs within transaction, all queries ran on it are bound to the transaction
+	// If we used the one from store we would not bound the queries we want to execute to the transaction, all of them
+	// would run separately
 	q := New(tx)
 
 	err = fn(q)

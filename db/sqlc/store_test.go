@@ -21,8 +21,8 @@ func TestTransferTx(t *testing.T) {
 	n := 5
 	amount := int64(10)
 
-	// Channels are used to send data between concurently running goroutines
-	// This TestTransferTX fuction will also we run in a goroutine which will be the main one
+	// Channels are used to send data between concurrently running goroutines
+	// This TestTransferTX function will also we run in a goroutine which will be the main one
 	// To send the errors and results from invoked goroutines we declare channels below
 	errs := make(chan error)
 	results := make(chan TransferTxResult)
@@ -38,8 +38,8 @@ func TestTransferTx(t *testing.T) {
 			})
 			// In a normal test here we would have the assertions using require package
 			// But we cannot do it because each of the functions is run concurrently in a different goroutine and
-			// we cannot we sure if the execution would be stopped if i was requested when the error occured
-			// That is why we use channels to send errors and results from each of concurently running tests to to main goroutine
+			// we cannot be sure if the execution would be stopped if it was requested when the error occurred
+			// That is why we use channels to send errors and results from each of concurrently running tests to to main goroutine
 			// where they will be asserted
 			errs <- err
 			results <- result
@@ -108,7 +108,7 @@ func TestTransferTx(t *testing.T) {
 		require.Equal(t, diff1, diff2)
 		// The amount that was subtracted from the account1 cannot be negative
 		require.True(t, diff1 > 0)
-		// This amount must also be divisible by the amount(var amount) of money transfered in each transaction
+		// This amount must also be divisible by the amount(var amount) of money transferred in each transaction
 		require.True(t, diff1%amount == 0) // amount, 2*amount, 3*amount, ...
 
 		k := int(diff1 / amount)
@@ -138,9 +138,9 @@ func TestTransferTxDeadlock(t *testing.T) {
 	account2 := createRandomAccount(t)
 	fmt.Println(">> before:", account1.Balance, account2.Balance) // LOG
 
-	// In this example we will run 5 transactions transfering money from account1 to account2
+	// In this example we will run 5 transactions transferring money from account1 to account2
 	// and 5 transactions doing the opposite
-	// if not handled properely this would cause deadlock, because transactions would like to access same accounts at the same time
+	// if not handled properly this would cause deadlock, because transactions would like to access same accounts at the same time
 	n := 10
 	amount := int64(10)
 	errs := make(chan error)
