@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -13,7 +12,6 @@ func TestTransferTx(t *testing.T) {
 
 	account1 := createRandomAccount(t)
 	account2 := createRandomAccount(t)
-	fmt.Println(">> before:", account1.Balance, account2.Balance) // LOG
 
 	// It is good to check if our transaction runs well while being one of the many transactions
 	// running concurrently, to do that we will
@@ -102,7 +100,6 @@ func TestTransferTx(t *testing.T) {
 		require.Equal(t, account2.ID, toAccount.ID)
 
 		// Check accounts' balance
-		fmt.Println(">> tx:", fromAccount.Balance, toAccount.Balance) // LOG
 		diff1 := account1.Balance - fromAccount.Balance
 		diff2 := toAccount.Balance - account2.Balance
 		require.Equal(t, diff1, diff2)
@@ -112,7 +109,6 @@ func TestTransferTx(t *testing.T) {
 		require.True(t, diff1%amount == 0) // amount, 2*amount, 3*amount, ...
 
 		k := int(diff1 / amount)
-		fmt.Println(">> k:", k) // LOG
 		require.True(t, k >= 1 && k <= n)
 		// We also want to check if k is unique for each transaction
 		require.NotContains(t, existed, k)
@@ -126,7 +122,6 @@ func TestTransferTx(t *testing.T) {
 	updatedAccount2, err := testQueries.GetAccount(context.Background(), account2.ID)
 	require.NoError(t, err)
 
-	fmt.Println(">> after:", updatedAccount1.Balance, updatedAccount2.Balance) // LOG
 	require.Equal(t, account1.Balance-int64(n)*amount, updatedAccount1.Balance)
 	require.Equal(t, account2.Balance+int64(n)*amount, updatedAccount2.Balance)
 }
@@ -136,7 +131,6 @@ func TestTransferTxDeadlock(t *testing.T) {
 
 	account1 := createRandomAccount(t)
 	account2 := createRandomAccount(t)
-	fmt.Println(">> before:", account1.Balance, account2.Balance) // LOG
 
 	// In this example we will run 5 transactions transferring money from account1 to account2
 	// and 5 transactions doing the opposite
@@ -180,7 +174,6 @@ func TestTransferTxDeadlock(t *testing.T) {
 	updatedAccount2, err := testQueries.GetAccount(context.Background(), account2.ID)
 	require.NoError(t, err)
 
-	fmt.Println(">> after:", updatedAccount1.Balance, updatedAccount2.Balance) // LOG
 	// This time we expect the balances to be exactly the same before and after transfers
 	// because 5 transfers will subtract money from them and 5 will add money to them
 	require.Equal(t, account1.Balance, updatedAccount1.Balance)
