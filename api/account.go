@@ -9,6 +9,9 @@ import (
 	"github.com/lib/pq"
 )
 
+// Here binding:"<rule>" tells gin what should happen when binding the value to the field in a struct
+// So the binding process itself is just assigning value embedded in request to a field in a struct
+// and binding:"<rule>" specifies a rule which should be applied on that value when it is bind to a field
 type createAccountRequest struct {
 	Owner    string `json:"owner" binding:"required"`
 	Currency string `json:"currency" binding:"required,currency"`
