@@ -8,6 +8,7 @@ import (
 	"golang.org/x/crypto/chacha20poly1305"
 )
 
+// TODO: rewrite using official paseto package and latest version of PASETO
 // PasetoMaker is a PASETO token maker
 type PasetoMaker struct {
 	paseto       *paseto.V2
