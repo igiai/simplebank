@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: simplebank_db
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -q -U root -d simplebank_db" ]
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DB_SOURCE: postgresql://root:secret@postgres:5432/simplebank_db?sslmode=disable
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+# Comments about docker compose syntax:
+
+# The name of the folder in which docker_compose.yaml is placed is later used
+# as a prefix for the images, containers, network and as a name of the app in the docker desktop app
+
+# When using docker in general, when postgres is created from image and POSTGRES_DB=<my_db> is specified
+# the default db created inside will be named "my_db"
+
+# "-" indicates that the value is a part of a list
+# if "-" is not used it means that value is key-value pair in a dictionary
+# chosing one over the other only indicates how the value is defined
+# these syntaxes can be used interchangebly if possible
+# environment:                    environment:
+#  RACK_ENV: development          - RACK_ENV=development
+#  SHOW: 'true'            ==     - SHOW=true
+#  SESSION_SECRET:                - SESSION_SECRET
+
+# We use depends_on instruction to tell docker compose to wait for the container specified in it to be ready before
+# the container which depends on it can be created
+# Bare depends_on only waits for the container to be created, but some apps, inluding postgres, require more time to
+# be ready to accept calls, to satisfy that we can run some test (healtcheck) on the required container and only when
+# it passes the container which depends on it can be created
