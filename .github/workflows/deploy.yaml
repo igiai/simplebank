@@ -31,8 +31,9 @@ jobs:
       env:
         DB_SOURCE: ${{ secrets.DB_SOURCE }}
         TOKEN_SYMMETRIC_KEY: ${{ secrets.TOKEN_SYMMETRIC_KEY }}
-      run: 
-        echo $"DB_DRIVER=postgres\nDB_SOURCE=${DB_SOURCE}\nSERVER_ADDRESS=0.0.0.0:8080\nTOKEN_SYMMETRIC_KEY=${TOKEN_SYMMETRIC_KEY}\nACCESS_TOKEN_DURATION=15m" > app.env
+      run: |
+        p="DB_DRIVER=postgres\nDB_SOURCE=${DB_SOURCE}\nSERVER_ADDRESS=0.0.0.0:8080\nTOKEN_SYMMETRIC_KEY=${TOKEN_SYMMETRIC_KEY}\nACCESS_TOKEN_DURATION=15m"
+        echo -e "${p}" > app.env
     - name: Build, tag, and push docker image to Amazon ECR
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
