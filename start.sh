@@ -9,6 +9,8 @@ echo "run db migration"
 # file so that it can be used in the migrate step here
 source /app/app.env
 cat /app/app.env
+echo "value:"
+echo $DB_SOURCE
 # When ran with dokcer-composee DB_SOURCE is defined in the docker-compose.yaml and the below command will later use its value
 /app/migrate -path /app/migration -database "$DB_SOURCE" -verbose up
 
