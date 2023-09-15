@@ -27,7 +27,7 @@ services:
 # as a prefix for the images, containers, network and as a name of the app in the docker desktop app
 
 # When using docker in general, when postgres is created from image and POSTGRES_DB=<my_db> is specified
-# the default db created inside will be named "my_db"
+# the default db is created inside and it will be named "my_db"
 
 # "-" indicates that the value is a part of a list
 # if "-" is not used it means that value is key-value pair in a dictionary

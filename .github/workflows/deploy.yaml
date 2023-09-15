@@ -19,6 +19,23 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr # Here we specify id to be able to link to this steps output in the next step
       uses: aws-actions/amazon-ecr-login@v1
+    # In tutorial, here is a step to retrieve config values, which are sensitvie data(secrets), from AWS secret manager
+    # The idea is simple, these values are safely stored on AWS and we can get them using awscli, they are in json format, so later we use jq to transform them to a format
+    # that can be passed to app.env to replace values stored there
+    # This way an image that is passed to ECR has an app.env file with values retrieved from AWS secret manager and then viper reads these values from a file as in local instance
+    # The same effect can be achieved by declaring secrets in GitHub secrets and then retrieving them here when actions are ran or when using k8s, these values can be passed
+    # in secrets file, that way they are declared as env vars and viper can read them
+    # - name: Load secrets and save to app.env
+    #   run: aws secretsmanager get-secret-value --secret-id simple_bank --query SecretString --output text | jq -r 'to_entries|map("\(.key)=\(.value)")|.[]' > app.env
+    - name: Set prod config values
+      env:
+        DB_SOURCE: ${{ secrets.DB_SOURCE }}
+        TOKEN_SYMMETRIC_KEY: ${{ secrets.TOKEN_SYMMETRIC_KEY }}
+      run: echo "DB_DRIVER=postgres
+                DB_SOURCE=${DB_SOURCE}
+                SERVER_ADDRESS=0.0.0.0:8080
+                TOKEN_SYMMETRIC_KEY=${TOKEN_SYMMETRIC_KEY}
+                ACCESS_TOKEN_DURATION=15m" > app.env
     - name: Build, tag, and push docker image to Amazon ECR
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
